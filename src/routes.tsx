@@ -5,6 +5,7 @@ import UpdatePassword from "./pages/UpdatePassword";
 import Layout from "./components/Layout";
 import ErrorPage from "./ErrorPage";
 import ExamList from "./pages/ExamList";
+import EditExam from "./pages/EditExam";
 
 const routes: RouteObject[] = [
   {
@@ -19,6 +20,10 @@ const routes: RouteObject[] = [
       {
         path: "/test-list",
         element: <ExamList />,
+      },
+      {
+        path: "/edit-exam/:id",
+        element: <EditExam />,
       },
     ],
   },

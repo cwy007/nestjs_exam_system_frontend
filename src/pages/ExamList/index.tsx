@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Form, Input, Modal, Popconfirm, Space, Switch, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
@@ -10,6 +11,8 @@ import dayjs from "dayjs";
 import { compact } from "lodash";
 
 function ExamList() {
+  const navigate = useNavigate();
+
   const [list, setList] = useState<Exam[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -126,6 +129,11 @@ function ExamList() {
       width: 200,
       render: (_, record) => (
         <Space>
+          {!record.isPublished && (
+            <Button type="link" size="small" onClick={() => navigate(`/edit-exam/${record.id}`)}>
+              编辑
+            </Button>
+          )}
           <Popconfirm
             title={record.isPublished ? "确认取消发布？" : "确认发布该试卷？"}
             okText={record.isPublished ? "取消发布" : "发布"}
