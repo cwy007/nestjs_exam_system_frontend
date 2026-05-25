@@ -62,6 +62,13 @@ function UpdatePassword() {
 
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
+          label="用户名"
+          name="username"
+          rules={[{ required: true, message: "请输入用户名" }]}
+        >
+          <Input placeholder="请输入用户名" />
+        </Form.Item>
+        <Form.Item
           label="邮箱"
           name="email"
           rules={[
