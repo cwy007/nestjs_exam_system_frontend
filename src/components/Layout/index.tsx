@@ -2,42 +2,15 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { Layout, Dropdown, Avatar, Menu } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { useEffect } from "react";
-import cookies from "js-cookie";
 
 const { Header, Content, Sider } = Layout;
 
-const sideMenuItems: MenuProps["items"] = [
-  { key: "/meeting-room", label: "会议室管理" },
-  { key: "/booking-list", label: "预订历史" },
-];
+const sideMenuItems: MenuProps["items"] = [{ key: "/exam-list", label: "试卷管理" }];
 
 function AppLayout() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const userInfo = cookies.get("userInfo");
-    const accessToken = cookies.get("accessToken");
-    const refreshToken = cookies.get("refreshToken");
-    console.log("Cookies on MeetingRoomList mount:", { userInfo, accessToken, refreshToken });
-
-    if (userInfo && accessToken && refreshToken) {
-      localStorage.setItem("userInfo", userInfo);
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
-
-      cookies.remove("userInfo");
-      cookies.remove("accessToken");
-      cookies.remove("refreshToken");
-    }
-  }, []);
-
   const userMenuItems: MenuProps["items"] = [
-    {
-      key: "profile",
-      label: "个人中心",
-      onClick: () => navigate("/profile"),
-    },
     {
       key: "update-password",
       label: "修改密码",

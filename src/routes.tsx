@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import UpdatePassword from "./pages/UpdatePassword";
 import Layout from "./components/Layout";
 import ErrorPage from "./ErrorPage";
+import ExamList from "./pages/ExamList";
 
 const routes: RouteObject[] = [
   {
@@ -13,7 +14,11 @@ const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <Navigate to="/signup" replace />,
+        element: <Navigate to="/test-list" replace />,
+      },
+      {
+        path: "/test-list",
+        element: <ExamList />,
       },
     ],
   },

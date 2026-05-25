@@ -14,9 +14,8 @@ function Login() {
       if (res.code === 200) {
         message.success("登录成功");
         console.log("login response:", res);
-        localStorage.setItem("accessToken", res.data?.accessToken);
-        localStorage.setItem("refreshToken", res.data?.refreshToken);
-        localStorage.setItem("userInfo", JSON.stringify(res.data?.userInfo));
+        localStorage.setItem("accessToken", res.data?.token);
+        localStorage.setItem("userInfo", JSON.stringify(res.data?.user));
 
         setTimeout(() => {
           navigate("/"); // 登录成功后跳转到主页
