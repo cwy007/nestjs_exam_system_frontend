@@ -87,12 +87,17 @@ function ExamDetail() {
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      await addAnswer({
+      const res = await addAnswer({
         examId,
         content: JSON.stringify(answers),
       });
       globalMessage.instance?.success("提交成功");
-      navigate(-1);
+      const answerId = res.data?.id;
+      if (answerId) {
+        navigate(`/test-result/${answerId}`, { replace: true });
+      } else {
+        navigate(-1);
+      }
     } catch {
       // 全局拦截器已提示
     } finally {

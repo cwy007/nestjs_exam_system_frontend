@@ -13,3 +13,15 @@ export interface AddAnswerDto {
   /** 答卷内容（答案数组的 JSON 字符串） */
   content: string;
 }
+
+/** 提交答卷接口返回 */
+export interface AddAnswerVo {
+  /** 答卷 ID（后续跳转结果页使用） */
+  id: number;
+  content: string;
+  score: number;
+  createTime: string;
+  updateTime: string;
+  answererId: number;
+  examId: number;
+}

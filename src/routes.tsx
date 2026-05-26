@@ -7,6 +7,7 @@ import ErrorPage from "./ErrorPage";
 import ExamList from "./pages/ExamList";
 import EditExam from "./pages/EditExam";
 import ExamDetail from "./pages/ExamDetail";
+import ExamResult from "./pages/ExamResult";
 
 const routes: RouteObject[] = [
   {
@@ -29,6 +30,10 @@ const routes: RouteObject[] = [
       {
         path: "/test-detail/:id",
         element: <ExamDetail />,
+      },
+      {
+        path: "/test-result/:id",
+        element: <ExamResult />,
       },
     ],
   },
