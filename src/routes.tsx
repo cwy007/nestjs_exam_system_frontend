@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import ErrorPage from "./ErrorPage";
 import ExamList from "./pages/ExamList";
 import EditExam from "./pages/EditExam";
+import ExamDetail from "./pages/ExamDetail";
 
 const routes: RouteObject[] = [
   {
@@ -24,6 +25,10 @@ const routes: RouteObject[] = [
       {
         path: "/edit-exam/:id",
         element: <EditExam />,
+      },
+      {
+        path: "/test-detail/:id",
+        element: <ExamDetail />,
       },
     ],
   },

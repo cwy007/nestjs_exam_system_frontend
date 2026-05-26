@@ -159,6 +159,11 @@ function ExamList() {
               </Button>
             </Popconfirm>
           )}
+          {record.isPublished && (
+            <Button type="link" size="small" onClick={() => navigate(`/test-detail/${record.id}`)}>
+              答题
+            </Button>
+          )}
         </Space>
       ),
     },

@@ -21,6 +21,11 @@ export default defineConfig({
         target: 'http://localhost:3002', // 后端服务器地址
         changeOrigin: true, // 是否修改请求头中的 Origin 字段
       },
+      // 将 /answer 代理到后端服务器（答卷服务）
+      '/answer': {
+        target: 'http://localhost:3003',
+        changeOrigin: true,
+      },
     },
   },
 })

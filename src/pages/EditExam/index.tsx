@@ -38,10 +38,19 @@ const TYPE_COLOR: Record<QuestionType, string> = {
   input: "orange",
 };
 
+/** 生成一个随机题目 ID */
+function genQuestionId(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `q_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+}
+
 /** 按题型构造一道默认题目 */
 function createDefaultQuestion(type: QuestionType): Question {
   if (type === "input") {
     return {
+      id: genQuestionId(),
       type,
       question: "",
       score: 5,
@@ -50,6 +59,7 @@ function createDefaultQuestion(type: QuestionType): Question {
     };
   }
   return {
+    id: genQuestionId(),
     type,
     question: "",
     options: ["选项1", "选项2"],
@@ -59,12 +69,13 @@ function createDefaultQuestion(type: QuestionType): Question {
   };
 }
 
-/** 解析后端返回的 content 字段为题目数组 */
+/** 解析后端返回的 content 字段为题目数组，并为缺失 id 的旧数据补上 id */
 function parseContent(content: string): Question[] {
   if (!content) return [];
   try {
     const parsed = JSON.parse(content);
-    return Array.isArray(parsed) ? (parsed as Question[]) : [];
+    if (!Array.isArray(parsed)) return [];
+    return (parsed as Question[]).map((q) => (q.id ? q : { ...q, id: genQuestionId() }));
   } catch {
     return [];
   }

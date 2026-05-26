@@ -3,6 +3,8 @@ export type QuestionType = "radio" | "checkbox" | "input";
 
 /** 单道题目结构（最终序列化到试卷 content 字段） */
 export interface Question {
+  /** 题目唯一 ID（前端生成，随题目一起保存） */
+  id: string;
   /** 题目类型 */
   type: QuestionType;
   /** 题干 */
