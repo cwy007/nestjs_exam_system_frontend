@@ -3,8 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { Button, Form, Input, Modal, Popconfirm, Space, Switch, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
-import { addExam, deleteExam, getExamList, publishExam, unpublishExam } from "./services";
-import type { Exam } from "./types";
+import {
+  addExam,
+  deleteExam,
+  exportAnswers,
+  getExamList,
+  getRanking,
+  publishExam,
+  unpublishExam,
+} from "./services";
+import type { Exam, RankingItem } from "./types";
 import globalMessage from "../../common/utils/globalMessage";
 import "./index.scss";
 import dayjs from "dayjs";
@@ -22,6 +30,12 @@ function ExamList() {
   const [modalOpen, setModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm<{ name: string }>();
+
+  // 排行榜弹窗状态
+  const [rankingOpen, setRankingOpen] = useState(false);
+  const [rankingLoading, setRankingLoading] = useState(false);
+  const [rankingList, setRankingList] = useState<RankingItem[]>([]);
+  const [rankingExam, setRankingExam] = useState<Exam | null>(null);
 
   const fetchList = useCallback(async (binFlag: boolean, pageNum: number, size: number) => {
     setLoading(true);
@@ -102,6 +116,39 @@ function ExamList() {
     }
   };
 
+  /** 导出某份试卷的答卷为 Excel 文件 */
+  const handleExport = async (record: Exam) => {
+    try {
+      const blob = await exportAnswers(record.id);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${record.name || "answers"}-${record.id}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      globalMessage.instance?.success("导出成功");
+    } catch {
+      // 全局拦截器已提示
+    }
+  };
+
+  /** 打开某份试卷的排行榜弹窗 */
+  const handleOpenRanking = async (record: Exam) => {
+    setRankingExam(record);
+    setRankingOpen(true);
+    setRankingLoading(true);
+    try {
+      const res = await getRanking(record.id);
+      setRankingList(res.data ?? []);
+    } catch {
+      // 全局拦截器已提示
+    } finally {
+      setRankingLoading(false);
+    }
+  };
+
   const columns: ColumnsType<Exam> = compact([
     { title: "ID", dataIndex: "id", width: 80 },
     { title: "试卷名称", dataIndex: "name" },
@@ -164,6 +211,16 @@ function ExamList() {
               答题
             </Button>
           )}
+          {record.isPublished && (
+            <Button type="link" size="small" onClick={() => handleExport(record)}>
+              导出
+            </Button>
+          )}
+          {record.isPublished && (
+            <Button type="link" size="small" onClick={() => handleOpenRanking(record)}>
+              排行榜
+            </Button>
+          )}
         </Space>
       ),
     },
@@ -224,6 +281,56 @@ function ExamList() {
             <Input placeholder="请输入试卷名称" maxLength={50} />
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title={`排行榜·${rankingExam?.name ?? ""}`}
+        open={rankingOpen}
+        onCancel={() => setRankingOpen(false)}
+        footer={null}
+        width={720}
+        destroyOnHidden
+      >
+        <Table<RankingItem>
+          rowKey="id"
+          loading={rankingLoading}
+          dataSource={rankingList}
+          pagination={false}
+          size="small"
+          columns={[
+            {
+              title: "名次",
+              width: 80,
+              render: (_, __, index) => {
+                const rank = index + 1;
+                if (rank === 1) return <Tag color="gold">🥇 1</Tag>;
+                if (rank === 2) return <Tag color="default">🥈 2</Tag>;
+                if (rank === 3) return <Tag color="orange">🥉 3</Tag>;
+                return rank;
+              },
+            },
+            {
+              title: "答题人",
+              dataIndex: ["answerer", "username"],
+            },
+            {
+              title: "邮箱",
+              dataIndex: ["answerer", "email"],
+            },
+            {
+              title: "得分",
+              dataIndex: "score",
+              width: 100,
+              render: (v: number) => <Tag color="blue">{v}</Tag>,
+            },
+            {
+              title: "提交时间",
+              dataIndex: "createTime",
+              width: 180,
+              render: (v: string) => (v ? dayjs(v).format("YYYY-MM-DD HH:mm:ss") : "-"),
+            },
+          ]}
+        />
       </Modal>
     </div>
   );

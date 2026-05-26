@@ -37,3 +37,20 @@ export interface AddExamDto {
   /** 试卷名称 */
   name: string;
 }
+
+/** 排行榜单项（answer + answerer + exam 关联） */
+export interface RankingItem {
+  id: number;
+  content: string;
+  score: number;
+  createTime: string;
+  updateTime: string;
+  answererId: number;
+  examId: number;
+  answerer: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  exam: Exam;
+}

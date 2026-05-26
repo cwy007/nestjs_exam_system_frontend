@@ -26,6 +26,11 @@ export default defineConfig({
         target: 'http://localhost:3003',
         changeOrigin: true,
       },
+      // 将 /analyse 代理到后端服务器（数据分析服务）
+      '/analyse': {
+        target: 'http://localhost:3004',
+        changeOrigin: true,
+      },
     },
   },
 })
